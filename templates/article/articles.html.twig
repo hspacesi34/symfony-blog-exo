@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des articles{% endblock %}
+
+{% block body %}
+<div class="min-h-[calc(100vh-var(--navbar-height))] bg-base-200 py-10 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-bold text-center mb-10 text-primary">Nos Articles</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for article in articles %}
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-lg overflow-hidden">
+                <div class="card-body p-6 flex flex-col justify-between">
+                    <!-- Title -->
+                    <h2 class="text-xl font-semibold mb-2">{{ article.titleArticle }}</h2>
+
+                    <!-- Publication date -->
+                    {% if article.publishedAt %}
+                        <p class="text-sm text-gray-400 mb-2">Publié le : {{ article.publishedAt.format('d/m/Y H:i') }}</p>
+                    {% else %}
+                        <p class="text-sm text-gray-400 mb-2">Non publié</p>
+                    {% endif %}
+
+                    <!-- Categories -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        {% if article.categories|length > 0 %}
+                            {% for category in article.categories %}
+                                <span class="badge badge-primary">{{ category.nameCat }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <span class="badge badge-warning">Pas de catégorie</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action button -->
+                    <div class="card-actions justify-end">
+                        <a href="{{ path('app_article', {id: article.id}) }}" class="btn btn-sm btn-primary">Voir l'article</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <p class="col-span-full text-center text-gray-400 mt-10">Aucun article trouvé.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

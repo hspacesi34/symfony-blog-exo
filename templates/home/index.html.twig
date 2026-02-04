@@ -1,37 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!
-{% endblock %}
+{% block title %}Accueil - MonBlog{% endblock %}
 
 {% block body %}
-	<style>
-		.example-wrapper {
-			margin: 1em auto;
-			max-width: 800px;
-			width: 95%;
-			font: 18px / 1.5 sans-serif;
-		}
-		.example-wrapper code {
-			background: #F5F5F5;
-			padding: 2px 6px;
-		}
-	</style>
+<div class="min-h-[calc(100vh-var(--navbar-height))] bg-base-200 flex flex-col items-center justify-center py-16 px-4 sm:px-6 lg:px-8">
 
-	<div class="example-wrapper">
-		<h1>Hello
-			{{ controller_name }}! ✅</h1>
+    <!-- Header -->
+    <header class="text-center mb-16">
+        <h1 class="text-5xl font-extrabold text-primary mb-4">Bienvenue sur MonBlog</h1>
+        <p class="text-lg text-gray-500 max-w-2xl mx-auto">Découvrez nos utilisateurs, catégories et articles.</p>
+    </header>
 
-		<div class="card bg-base-100 w-96 shadow-sm">
-			<figure>
-				<img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes"/>
-			</figure>
-			<div class="card-body">
-				<h2 class="card-title">Card Title</h2>
-				<p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
-				<div class="card-actions justify-end">
-					<button class="btn btn-primary">Buy Now</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <!-- Cards principales -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
+
+        <!-- Utilisateurs -->
+        <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-xl p-6 text-center">
+            <div class="mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4.992 4.992 0 015 15a5 5 0 115 5h0a5 5 0 01-4.879-2.196zM15 11a4 4 0 10-8 0 4 4 0 008 0z" />
+                </svg>
+            </div>
+            <h2 class="text-xl font-bold mb-2">Utilisateurs</h2>
+            <p class="text-gray-500 mb-4">Voir tous les utilisateurs inscrits sur le blog.</p>
+            <a href="{{ path('app_user_members') }}" class="btn btn-primary btn-sm">Accéder</a>
+        </div>
+
+        <!-- Catégories -->
+        <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-xl p-6 text-center">
+            <div class="mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </div>
+            <h2 class="text-xl font-bold mb-2">Catégories</h2>
+            <p class="text-gray-500 mb-4">Parcourez les différentes catégories d’articles du blog.</p>
+            <a href="{{ path('app_categories') }}" class="btn btn-primary btn-sm">Accéder</a>
+        </div>
+
+        <!-- Articles -->
+        <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-xl p-6 text-center">
+            <div class="mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h9l7 7v9a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <h2 class="text-xl font-bold mb-2">Articles</h2>
+            <p class="text-gray-500 mb-4">Consultez tous les articles publiés sur le blog.</p>
+            <a href="{{ path('app_articles') }}" class="btn btn-primary btn-sm">Accéder</a>
+        </div>
+
+    </div>
+</div>
 {% endblock %}

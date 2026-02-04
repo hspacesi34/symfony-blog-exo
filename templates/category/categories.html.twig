@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des catégories
+{% endblock %}
+
+{% block body %}
+	<div class="min-h-screenmin-h-[calc(100vh-var(--navbar-height))] bg-base-200 py-10 px-4 sm:px-6 lg:px-8">
+		<h1 class="text-4xl font-bold text-center mb-10 text-primary">Nos Catégories</h1>
+
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+			{% for category in categories %}
+				<div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-lg overflow-hidden">
+					<div
+						class="card-body p-6 flex flex-col items-center text-center">
+						<!-- Category name -->
+						<h2 class="text-xl font-semibold mb-2">{{ category.nameCat }}</h2>
+
+						<!-- Action button -->
+						<div class="card-actions">
+							<a href="{{ path('app_category', {id: category.id}) }}" class="btn btn-sm btn-primary">Voir Détails</a>
+						</div>
+					</div>
+				</div>
+			{% else %}
+				<p class="col-span-full text-center text-gray-400 mt-10">Aucune catégorie trouvée.</p>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

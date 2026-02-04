@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catégorie :
+	{{ category.nameCat }}
+{% endblock %}
+
+{% block body %}
+	<div class="min-h-[calc(100vh-var(--navbar-height))] bg-base-200 flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
+		<div class="card w-full max-w-md bg-base-100 shadow-2xl rounded-xl overflow-hidden">
+			<div
+				class="card-body items-center text-center p-8">
+				<!-- Name -->
+				<h2 class="text-2xl font-bold mb-2">{{ category.nameCat }}</h2>
+
+				<!-- Description -->
+				<p class="text-gray-500 mb-4">{{ category.descriptionCat }}</p>
+
+				<!-- Actions -->
+				<div class="card-actions justify-center gap-4">
+					<a href="{{ path('app_categories') }}" class="btn btn-sm btn-primary">Retour à la liste</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs
+{% endblock %}
+
+{% block body %}
+	<div class="min-h-screen bg-base-200 py-10 px-4 sm:px-6 lg:px-8">
+		<h1 class="text-4xl font-bold text-center mb-10 text-primary">Nos Utilisateurs</h1>
+
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+			{% for user in users %}
+				<div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 rounded-lg overflow-hidden">
+					<div class="p-6 flex flex-col items-center text-center">
+						<div class="avatar mb-4">
+							<div class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+								<img src="https://i.pravatar.cc/150?u={{ user.id }}" alt="{{ user.nameUser }} {{ user.firstnameUser }}">
+							</div>
+						</div>
+						<h2 class="text-xl font-semibold">{{ user.firstnameUser }}
+							{{ user.nameUser }}</h2>
+
+						<div class="card-actions mt-4 flex flex-wrap justify-center gap-2">
+							<a href="{{ path('app_user_account', {email: user.emailUser}) }}" class="btn btn-sm btn-primary">Voir Profil</a>
+						</div>
+					</div>
+				</div>
+			{% else %}
+				<p class="col-span-full text-center text-gray-400 mt-10">Aucun utilisateur trouvé.</p>
+			{% endfor %}
+		</div>
+	</div>
+{% endblock %}

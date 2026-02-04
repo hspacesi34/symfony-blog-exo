@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ article.titleArticle }}
+{% endblock %}
+
+{% block body %}
+	<div class="min-h-[calc(100vh-var(--navbar-height))] bg-base-200 py-10 px-4 sm:px-6 lg:px-8">
+		<div class="max-w-4xl mx-auto bg-base-100 shadow-2xl rounded-xl overflow-hidden">
+
+			<div
+				class="p-8">
+				<!-- Titre -->
+				<h1 class="text-3xl font-bold mb-4 text-center text-primary">{{ article.titleArticle }}</h1>
+
+				<!-- Auteur et dates -->
+				<div class="flex flex-col sm:flex-row justify-between text-sm text-gray-500 mb-6">
+					<span>Auteur :
+						{{ article.writeBy.firstnameUser }}
+						{{ article.writeBy.nameUser }}</span>
+					<span>
+						Publié le :
+						{% if article.publishedAt %}
+							{{ article.publishedAt.format('d/m/Y H:i') }}
+						{% else %}
+							Non publié
+						{% endif %}
+					</span>
+					{% if article.updatedAt %}
+						<span>Mis à jour le :
+							{{ article.updatedAt.format('d/m/Y H:i') }}</span>
+					{% endif %}
+				</div>
+
+				<!-- Categories -->
+				<div class="flex flex-wrap gap-2 mb-6">
+					{% if article.categories|length > 0 %}
+						{% for category in article.categories %}
+							<span class="badge badge-primary">{{ category.nameCat }}</span>
+						{% endfor %}
+					{% else %}
+						<span class="badge badge-warning">Pas de catégorie</span>
+					{% endif %}
+				</div>
+
+				<!-- Contenu -->
+				<div class="prose prose-lg max-w-none text-gray-700">
+					{{ article.contentArticle|raw }}
+				</div>
+
+				<!-- Boutons actions -->
+				<div class="mt-8 flex justify-center gap-4">
+					<a href="{{ path('app_articles') }}" class="btn btn-primary btn-sm">Retour à la liste</a>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

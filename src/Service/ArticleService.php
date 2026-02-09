@@ -2,14 +2,22 @@
 
 namespace App\Service;
 
-use App\Entity\Article;
-use App\Entity\Entity;
+use App\Entity\{User, Article};
 use App\Repository\ArticleRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormFactoryInterface;
+use App\Form\ArticleType;
+use Symfony\Component\Form\Form;
 
 class ArticleService extends AbstractService
 {
     public function __construct(
-        private ArticleRepository $articleRepository
+        private ArticleRepository $articleRepository,
+        private EntityManagerInterface $em,
+        private FormFactoryInterface $ffi
     ) {}
 
     public function getOne(int $id): ?Article
@@ -20,5 +28,29 @@ class ArticleService extends AbstractService
     public function getAll(): array
     {
         return $this->articleRepository->findAll();
+    }
+
+    public function addArticle(Request $request): array
+    {
+        $form = $this->ffi->create(ArticleType::class, new Article());
+        $form->add('submit', SubmitType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $article = $form->getData();
+            $article->setWriteBy($this->em->getReference(User::class, 41))
+                    ->setCreatedAt(new \DateTimeImmutable());
+            $this->em->persist($article);
+            $this->em->flush();
+
+            return [
+                'success' => true,
+                'form' => $form
+            ];
+        }
+        return [
+            'success' => false,
+            'form' => $form
+        ];
     }
 }

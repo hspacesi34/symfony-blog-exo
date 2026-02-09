@@ -61,7 +61,7 @@ class AppFixtures extends Fixture
                 ->setImageArticle($faker->imageUrl())
                 ->setCreatedAt(new \DateTimeImmutable())
                 ->setWriteBy($users[rand(0, (count($users) - 1))])
-                ->setPublishedAt(new \DateTimeImmutable())
+                ->setPublishedAt(new \DateTimeImmutable());
             // Choisir un nombre aléatoire de catégories (entre 1 et count($categories))
             $nbCategories = rand(1, count($categories));
 

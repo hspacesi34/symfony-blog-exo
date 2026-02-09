@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\Entity;
 use App\Entity\User;
 use App\Repository\UserRepository;
 

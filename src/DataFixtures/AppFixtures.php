@@ -38,7 +38,8 @@ class AppFixtures extends Fixture
                 ->setNameUser($nom)
                 ->setFirstnameUser($prenom)
                 ->setEmailUser($email)
-                ->setPasswordUser($faker->password(10, 100))
+                ->setPassword($faker->password(10, 100))
+                ->setRoles(['ROLE_USER'])
                 ->setCreatedAt(new \DateTimeImmutable());
 
             $manager->persist($user);

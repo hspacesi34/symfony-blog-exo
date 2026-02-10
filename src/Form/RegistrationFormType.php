@@ -18,11 +18,44 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name_user')
-            ->add('firstname_user')
-            ->add('email_user', EmailType::class)
+            ->add('name_user', null, [
+                'attr' => [
+                    'class' => 'input input-bordered w-full max-w-xs',
+                ],
+                'row_attr' => [
+                    'class' => 'form-control mb-4',
+                ],
+                'label_attr' => [
+                    'class' => 'label',
+                ],
+            ])
+            ->add('firstname_user', null, [
+                'attr' => [
+                    'class' => 'input input-bordered w-full max-w-xs',
+                ],
+                'row_attr' => [
+                    'class' => 'form-control mb-4',
+                ],
+                'label_attr' => [
+                    'class' => 'label',
+                ],
+            ])
+            ->add('email_user', EmailType::class, [
+                'row_attr' => ['class' => 'form-control w-full max-w-xs'],
+                'label_attr' => ['class' => 'label'],
+                'attr' => ['class' => 'input input-bordered w-full max-w-xs'],
+            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
+                'row_attr' => [
+                    'class' => 'form-control mb-4',
+                ],
+                'label_attr' => [
+                    'class' => 'label cursor-pointer flex items-center gap-2',
+                ],
+                'attr' => [
+                    'class' => 'checkbox checkbox-primary',
+                ],
                 'constraints' => [
                     new IsTrue([
                         'message' => 'You should agree to our terms.',
@@ -30,10 +63,10 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
+                'row_attr' => ['class' => 'form-control w-full max-w-xs'],
+                'label_attr' => ['class' => 'label'],
+                'attr' => ['class' => 'input input-bordered w-full max-w-xs', 'autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter a password',
@@ -41,7 +74,6 @@ class RegistrationFormType extends AbstractType
                     new Length([
                         'min' => 6,
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
                         'max' => 4096,
                     ]),
                 ],

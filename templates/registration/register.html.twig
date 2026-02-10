@@ -3,19 +3,36 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+<div class="min-h-[calc(100vh-var(--navbar-height))] flex items-center justify-center bg-base-200 p-4">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl">
+        <div class="card-body p-8 flex flex-col items-center">
+            <h1 class="card-title text-2xl mb-6">S'enregistrer</h1>
 
-    {{ form_errors(registrationForm) }}
+            {{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.name_user) }}
-        {{ form_row(registrationForm.firstname_user) }}
-        {{ form_row(registrationForm.email_user) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            {{ form_start(registrationForm, {
+                attr: {
+                    class: 'flex flex-col gap-4 w-full max-w-sm'
+                }
+            }) }}
+                {{ form_row(registrationForm.name_user) }}
+                {{ form_row(registrationForm.firstname_user) }}
+                {{ form_row(registrationForm.email_user) }}
+                {{ form_row(registrationForm.plainPassword, {
+                    label: 'Password'
+                }) }}
+                {{ form_row(registrationForm.agreeTerms) }}
+                
+                <div class="form-control mt-6 w-full max-w-sm flex justify-center">
+                    <button type="submit" class="btn btn-primary w-32">Register</button>
+                </div>
+            {{ form_end(registrationForm) }}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+		    {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CategoryRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 abstract class AbstractService
 {
@@ -20,6 +21,7 @@ abstract class AbstractService
     protected UserRepository $userRepository;
     protected ArticleRepository $articleRepository;
     protected UserPasswordHasherInterface $userPasswordHasher;
+    protected Security $security;
 
     public function __construct(
         FormFactoryInterface $ffi, 
@@ -27,7 +29,8 @@ abstract class AbstractService
         CategoryRepository $categoryRepository,
         UserRepository $userRepository,
         ArticleRepository $articleRepository,
-        UserPasswordHasherInterface $userPasswordHasher
+        UserPasswordHasherInterface $userPasswordHasher,
+        Security $security
         )
     {
         $this->ffi = $ffi;
@@ -36,6 +39,7 @@ abstract class AbstractService
         $this->userRepository = $userRepository;
         $this->articleRepository = $articleRepository;
         $this->userPasswordHasher = $userPasswordHasher;
+        $this->security = $security;
     }
 
     public abstract function getOne(int $id): ?Entity;

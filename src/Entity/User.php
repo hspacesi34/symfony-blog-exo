@@ -7,39 +7,78 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL_USER', fields: ['email_user'])]
 #[UniqueEntity(fields: ['email_user'], message: 'There is already an account with this email_user')]
+#[ApiResource(
+    operations:[
+        new GetCollection(
+            uriTemplate: '/users',
+            normalizationContext: ['groups' => 'user-read']
+        ),
+        new Get(
+            uriTemplate: '/users/{id}',
+            normalizationContext: ['groups' => 'user-read']
+        ),
+        new Post(
+            uriTemplate: '/users',
+            denormalizationContext: ['groups' => 'user-write'],
+            normalizationContext: ['groups' => 'user-read']
+        ),
+        new Put(
+            uriTemplate: '/users/{id}',
+            denormalizationContext: ['groups' => 'user-write'],
+            normalizationContext: ['groups' => 'user-read']
+        ),
+        new Delete(
+            uriTemplate: '/users/{id}'
+        )
+    ]
+)]
 class User extends Entity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user-read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Groups(['user-read', 'user-write'])]
     private ?string $email_user = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Groups(['user-read'])]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['user-write'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['user-read', 'user-write'])]
     private ?string $name_user = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['user-read', 'user-write'])]
     private ?string $firstname_user = null;
 
     #[ORM\Column]
+    #[Groups(['user-read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int

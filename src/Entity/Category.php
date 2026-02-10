@@ -9,23 +9,58 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 #[UniqueEntity(fields: ['name_cat'], message: 'Cette catégorie existe déjà')]
+#[ApiResource(
+    operations:[
+        new GetCollection(
+            uriTemplate: '/categories',
+            normalizationContext: ['groups' => 'category-read']
+        ),
+        new Get(
+            uriTemplate: '/categories/{id}',
+            normalizationContext: ['groups' => 'category-read']
+        ),
+        new Post(
+            uriTemplate: '/categories',
+            denormalizationContext: ['groups' => 'category-write', 'allow_extra_attributes' => false],
+            normalizationContext: ['groups' => 'category-read']
+        ),
+        new Put(
+            uriTemplate: '/categories/{id}',
+            denormalizationContext: ['groups' => 'category-write', 'allow_extra_attributes' => false],
+            normalizationContext: ['groups' => 'category-read']
+        ),
+        new Delete(
+            uriTemplate: '/categories/{id}'
+        )
+    ]
+)]
 class Category extends Entity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['category-read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50, unique: true)]
     #[Assert\NotBlank(message: 'Le nom ne peut pas être vide')]
     #[Assert\Length(min: 3, max: 50, minMessage: 'Min 3 caractères', maxMessage: 'Max 50 caractères')]
+    #[Groups(['category-read', 'category-write'])]
     private ?string $name_cat = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'La description ne peut pas être vide')]
+    #[Groups(['category-read', 'category-write'])]
     private ?string $description_cat = null;
 
     /**

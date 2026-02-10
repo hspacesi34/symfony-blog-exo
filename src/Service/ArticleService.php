@@ -33,7 +33,8 @@ class ArticleService extends AbstractService
 
         if ($form->isSubmitted() && $form->isValid()) {
             $article = $form->getData();
-            $article->setWriteBy($this->em->getReference(User::class, 81))
+            $user = $this->security->getUser();
+            $article->setWriteBy($user)
                     ->setCreatedAt(new \DateTimeImmutable());
             $this->em->persist($article);
             $this->em->flush();

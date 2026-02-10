@@ -7,14 +7,44 @@
             </div>
 
             <!-- Menu Desktop -->
-            <div class="hidden md:flex space-x-4">
+            <div class="hidden md:flex items-center space-x-4">
                 <a href="{{ path('app_user_all') }}" class="btn btn-ghost btn-sm">Utilisateurs</a>
                 <a href="{{ path('app_category_all') }}" class="btn btn-ghost btn-sm">Catégories</a>
                 <a href="{{ path('app_article_all') }}" class="btn btn-ghost btn-sm">Articles</a>
+
+                <!-- Boutons Auth Desktop -->
+                {% if app.user %}
+                    <div class="flex items-center gap-2 ml-4">
+                        <span class="text-sm font-medium text-base-content">{{ app.user.userIdentifier }}</span>
+                        <a href="{{ logout_path() }}" class="btn btn-sm btn-warning">Logout</a>
+                    </div>
+                {% else %}
+                    <div class="flex items-center gap-2 ml-4">
+                        <a href="{{ path('app_register') }}" class="btn btn-sm btn-outline btn-success">Register</a>
+                        <a href="{{ path('app_login') }}" class="btn btn-sm btn-primary">Login</a>
+                    </div>
+                {% endif %}
             </div>
 
             <!-- Menu Mobile -->
-            <div class="md:hidden">
+            <div class="md:hidden flex items-center gap-2">
+                <!-- Bouton Auth Mobile -->
+                {% if app.user %}
+                    <span class="text-xs px-2 py-1 bg-base-200 rounded-full">{{ app.user.userIdentifier|slice(0, 12) }}...</span>
+                    <a href="{{ logout_path() }}" class="btn btn-circle btn-sm btn-warning">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-circle btn-sm btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                    </a>
+                {% endif %}
+
+                <!-- Hamburger Mobile -->
                 <div class="dropdown dropdown-end">
                     <label tabindex="0" class="btn btn-ghost btn-circle">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -25,6 +55,18 @@
                         <li><a href="{{ path('app_user_all') }}">Utilisateurs</a></li>
                         <li><a href="{{ path('app_category_all') }}">Catégories</a></li>
                         <li><a href="{{ path('app_article_all') }}">Articles</a></li>
+                        
+                        {# Auth dans dropdown mobile #}
+                        {% if app.user %}
+                            <li class="menu-title px-4 mt-2 border-t pt-2">
+                                <span class="text-xs font-bold">{{ app.user.userIdentifier }}</span>
+                            </li>
+                            <li><a href="{{ logout_path() }}">Logout</a></li>
+                        {% else %}
+                            <li class="divider mx-2"></li>
+                            <li><a href="{{ path('app_register') }}">Register</a></li>
+                            <a href="{{ path('app_login') }}">Login</a>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

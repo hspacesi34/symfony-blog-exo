@@ -8,43 +8,84 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
+#[ApiResource(
+    operations:[
+        new GetCollection(
+            uriTemplate: '/articles',
+            normalizationContext: ['groups' => ['article-read', 'category-read', 'user-read']]
+        ),
+        new Get(
+            uriTemplate: '/articles/{id}',
+            normalizationContext: ['groups' => ['article-read', 'category-read', 'user-read']]
+        ),
+        new Post(
+            uriTemplate: '/articles',
+            denormalizationContext: ['groups' => 'article-write', 'allow_extra_attributes' => false],
+            normalizationContext: ['groups' => 'article-read']
+        ),
+        new Put(
+            uriTemplate: '/articles/{id}',
+            denormalizationContext: ['groups' => 'article-write', 'allow_extra_attributes' => false],
+            normalizationContext: ['groups' => 'article-read']
+        ),
+        new Delete(
+            uriTemplate: '/articles/{id}'
+        )
+    ]
+)]
 class Article extends Entity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['article-read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'Le titre ne peut pas être vide')]
+    #[Groups(['article-read', 'article-write'])]
     private ?string $title_article = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Le contenu ne peut pas être vide')]
+    #[Groups(['article-read', 'article-write'])]
     private ?string $content_article = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "L'image url ne peut pas être vide")]
+    #[Groups(['article-read', 'article-write'])]
     private ?string $image_article = null;
 
     #[ORM\Column]
+    #[Groups(['article-read', 'article-write'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['article-read'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['article-read'])]
     private ?\DateTimeImmutable $publishedAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'articles')]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[Groups(['article-read', 'article-write'])]
     private ?User $writeBy = null;
 
     /**
      * @var Collection<int, Category>
      */
-    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'articles')]
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'articles', cascade: ['persist'])]
+    #[Groups(['article-read', 'article-write'])]
     private Collection $categories;
 
     public function __construct()

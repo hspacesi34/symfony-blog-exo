@@ -22,7 +22,6 @@ class RegistrationController extends AbstractController
 
         if ($result['submitted'] && $result['valid']) {
             $this->addFlash('success', 'Enregistrement bien effectué');
-            return $this->redirectToRoute('app_register');
         }
 
         return $this->render('registration/register.html.twig', [

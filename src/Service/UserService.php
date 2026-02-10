@@ -4,21 +4,10 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserService extends AbstractService
 {
-
-    public function __construct(
-        private UserRepository $userRepository,
-        private EntityManagerInterface $em,
-        private FormFactoryInterface $ffi,
-        private UserPasswordHasherInterface $userPasswordHasher
-    ) {}
 
     public function getOne(int $id): ?User
     {

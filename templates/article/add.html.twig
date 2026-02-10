@@ -3,11 +3,12 @@
 {% block title %}{% endblock %}
 
 {% block body %}
+<turbo-frame id="article-form">
 	{{ form(articleForm) }}
 		{% for message in app.flashes('success') %}
 			<div class="alert alert-success">
 				{{ message }}
 			</div>
 		{% endfor %}
-
+</turbo-frame>
 	{% endblock %}

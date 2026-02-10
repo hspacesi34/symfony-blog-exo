@@ -3,20 +3,12 @@
 namespace App\Service;
 
 use App\Entity\{User, Article};
-use App\Repository\ArticleRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\FormFactoryInterface;
 use App\Form\ArticleType;
 
 class ArticleService extends AbstractService
 {
-    public function __construct(
-        private ArticleRepository $articleRepository,
-        private EntityManagerInterface $em,
-        private FormFactoryInterface $ffi
-    ) {}
 
     public function getOne(int $id): ?Article
     {

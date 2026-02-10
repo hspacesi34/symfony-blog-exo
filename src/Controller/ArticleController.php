@@ -46,8 +46,6 @@ final class ArticleController extends AbstractController
 
         if ($result['success']) {
             $this->addFlash('success', 'Article ajouté avec succès');
-
-            return $this->redirectToRoute('app_article_add');
         }
         
         return $this->render('article/add.html.twig', [

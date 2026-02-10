@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
+use App\Form\CategoryType;
 use App\Service\CategoryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,7 +42,7 @@ final class CategoryController extends AbstractController
 
         if ($result['submitted'] && $result['valid']) {
             $this->addFlash('success', 'Catégorie ajoutée avec succès');
-            return $this->redirectToRoute('app_category_add');
+            $result['form'] = $this->categoryService->clearForm(CategoryType::class, new Category());
         }
 
         return $this->render('category/add.html.twig', [

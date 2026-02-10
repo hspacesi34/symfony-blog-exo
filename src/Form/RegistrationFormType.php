@@ -57,9 +57,7 @@ class RegistrationFormType extends AbstractType
                     'class' => 'checkbox checkbox-primary',
                 ],
                 'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
+                    new IsTrue(message: 'You should agree to our terms.'),
                 ],
             ])
             ->add('plainPassword', PasswordType::class, [
@@ -68,14 +66,8 @@ class RegistrationFormType extends AbstractType
                 'label_attr' => ['class' => 'label'],
                 'attr' => ['class' => 'input input-bordered w-full max-w-xs', 'autocomplete' => 'new-password'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        'max' => 4096,
-                    ]),
+                    new NotBlank(message: 'Please enter a password'),
+                    new Length(min: 6, minMessage: 'Your password should be at least {{ limit }} characters', max: 4096),
                 ],
             ])
         ;

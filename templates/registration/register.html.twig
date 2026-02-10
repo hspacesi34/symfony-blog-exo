@@ -9,29 +9,31 @@
             <h1 class="card-title text-2xl mb-6">S'enregistrer</h1>
 
             {{ form_errors(registrationForm) }}
-
-            {{ form_start(registrationForm, {
-                attr: {
-                    class: 'flex flex-col gap-4 w-full max-w-sm'
-                }
-            }) }}
-                {{ form_row(registrationForm.name_user) }}
-                {{ form_row(registrationForm.firstname_user) }}
-                {{ form_row(registrationForm.email_user) }}
-                {{ form_row(registrationForm.plainPassword, {
-                    label: 'Password'
+            <turbo-frame id="register-form">
+                <!-- votre formulaire + alerte -->
+                {{ form_start(registrationForm, {
+                    attr: {
+                        class: 'flex flex-col gap-4 w-full max-w-sm'
+                    }
                 }) }}
-                {{ form_row(registrationForm.agreeTerms) }}
-                
-                <div class="form-control mt-6 w-full max-w-sm flex justify-center">
-                    <button type="submit" class="btn btn-primary w-32">Register</button>
-                </div>
-            {{ form_end(registrationForm) }}
-            {% for message in app.flashes('success') %}
-                <div class="alert alert-success">
-                    {{ message }}
-                </div>
-		    {% endfor %}
+                    {{ form_row(registrationForm.name_user) }}
+                    {{ form_row(registrationForm.firstname_user) }}
+                    {{ form_row(registrationForm.email_user) }}
+                    {{ form_row(registrationForm.plainPassword, {
+                        label: 'Password'
+                    }) }}
+                    {{ form_row(registrationForm.agreeTerms) }}
+                    
+                    <div class="form-control mt-6 w-full max-w-sm flex justify-center">
+                        <button type="submit" class="btn btn-primary w-32">Register</button>
+                    </div>
+                {{ form_end(registrationForm) }}
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </turbo-frame>
         </div>
     </div>
 </div>

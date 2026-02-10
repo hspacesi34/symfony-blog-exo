@@ -4,19 +4,11 @@ namespace App\Service;
 
 use App\Entity\Category;
 use App\Form\CategoryType;
-use App\Repository\CategoryRepository;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class CategoryService extends AbstractService
 {
-    public function __construct(
-        private CategoryRepository $categoryRepository,
-        private EntityManagerInterface $em,
-        private FormFactoryInterface $ffi
-    ) {}
 
     public function getOne(int $id): ?Category
     {

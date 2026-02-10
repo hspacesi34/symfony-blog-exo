@@ -3,6 +3,7 @@
 {% block title %}{% endblock %}
 
 {% block body %}
+<turbo-frame id="category-form">
     {{ form_errors(categoryForm) }}
 	{{ form(categoryForm) }}
 		{% for message in app.flashes('success') %}
@@ -10,5 +11,5 @@
 				{{ message }}
 			</div>
 		{% endfor %}
-
+</turbo-frame>
 	{% endblock %}

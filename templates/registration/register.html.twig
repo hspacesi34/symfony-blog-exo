@@ -8,6 +8,8 @@
     {{ form_errors(registrationForm) }}
 
     {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.name_user) }}
+        {{ form_row(registrationForm.firstname_user) }}
         {{ form_row(registrationForm.email_user) }}
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password'

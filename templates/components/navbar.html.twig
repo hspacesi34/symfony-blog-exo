@@ -8,9 +8,9 @@
 
             <!-- Menu Desktop -->
             <div class="hidden md:flex space-x-4">
-                <a href="{{ path('app_user_members') }}" class="btn btn-ghost btn-sm">Utilisateurs</a>
-                <a href="{{ path('app_categories') }}" class="btn btn-ghost btn-sm">Catégories</a>
-                <a href="{{ path('app_articles') }}" class="btn btn-ghost btn-sm">Articles</a>
+                <a href="{{ path('app_user_all') }}" class="btn btn-ghost btn-sm">Utilisateurs</a>
+                <a href="{{ path('app_category_all') }}" class="btn btn-ghost btn-sm">Catégories</a>
+                <a href="{{ path('app_article_all') }}" class="btn btn-ghost btn-sm">Articles</a>
             </div>
 
             <!-- Menu Mobile -->
@@ -22,9 +22,9 @@
                         </svg>
                     </label>
                     <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a href="{{ path('app_user_members') }}">Utilisateurs</a></li>
-                        <li><a href="{{ path('app_categories') }}">Catégories</a></li>
-                        <li><a href="{{ path('app_articles') }}">Articles</a></li>
+                        <li><a href="{{ path('app_user_all') }}">Utilisateurs</a></li>
+                        <li><a href="{{ path('app_category_all') }}">Catégories</a></li>
+                        <li><a href="{{ path('app_article_all') }}">Articles</a></li>
                     </ul>
                 </div>
             </div>

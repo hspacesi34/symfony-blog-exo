@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 class Article extends Entity
@@ -17,12 +18,15 @@ class Article extends Entity
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le titre ne peut pas être vide')]
     private ?string $title_article = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'Le contenu ne peut pas être vide')]
     private ?string $content_article = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'image url ne peut pas être vide")]
     private ?string $image_article = null;
 
     #[ORM\Column]

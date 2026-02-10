@@ -21,7 +21,7 @@ final class ArticleController extends AbstractController
         private ArticleService $articleService
     ) {}
 
-    #[Route('/all', name: 'app_articles')]
+    #[Route('/all', name: 'app_article_all')]
     public function articles(): Response
     {
         $articles = $this->articleService->getAll();
@@ -30,7 +30,7 @@ final class ArticleController extends AbstractController
         ]);
     }
 
-    #[Route('/one/{id}', name: 'app_article')]
+    #[Route('/one/{id}', name: 'app_article_one')]
     public function article(int $id): Response
     {
         $article = $this->articleService->getOne($id);

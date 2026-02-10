@@ -6,7 +6,7 @@ use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+#[Route('/user')]
 final class UserController extends AbstractController
 {
     public function __construct(
@@ -14,7 +14,7 @@ final class UserController extends AbstractController
     )
     {}
 
-    #[Route('/members', name: 'app_user_members')]
+    #[Route('/all', name: 'app_user_all')]
     public function members(): Response
     {
         $users = $this->userService->getAll();
@@ -23,7 +23,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/account/{email}', name: 'app_user_account')]
+    #[Route('/one/{email}', name: 'app_user_one')]
     public function account(string $email): Response
     {
         $user = $this->userService->getOneByEmail($email);

@@ -7,8 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[UniqueEntity(fields: ['name_cat'], message: 'Cette catégorie existe déjà')]
 class Category extends Entity
 {
     #[ORM\Id]
@@ -16,10 +19,13 @@ class Category extends Entity
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, unique: true)]
+    #[Assert\NotBlank(message: 'Le nom ne peut pas être vide')]
+    #[Assert\Length(min: 3, max: 50, minMessage: 'Min 3 caractères', maxMessage: 'Max 50 caractères')]
     private ?string $name_cat = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'La description ne peut pas être vide')]
     private ?string $description_cat = null;
 
     /**

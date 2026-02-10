@@ -5,12 +5,10 @@ namespace App\Service;
 use App\Entity\{User, Article};
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormFactoryInterface;
 use App\Form\ArticleType;
-use Symfony\Component\Form\Form;
 
 class ArticleService extends AbstractService
 {
@@ -33,12 +31,17 @@ class ArticleService extends AbstractService
     public function addArticle(Request $request): array
     {
         $form = $this->ffi->create(ArticleType::class, new Article());
-        $form->add('submit', SubmitType::class);
+        $form->add('submit', SubmitType::class, [
+                'label' => 'Publier l’article',
+                'attr' => [
+                    'class' => 'btn btn-primary mt-6',
+                ],
+            ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $article = $form->getData();
-            $article->setWriteBy($this->em->getReference(User::class, 41))
+            $article->setWriteBy($this->em->getReference(User::class, 81))
                     ->setCreatedAt(new \DateTimeImmutable());
             $this->em->persist($article);
             $this->em->flush();

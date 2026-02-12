@@ -72,11 +72,11 @@ jobs:
                 symfony console make:migration
                 symfony console doctrine:migrations:migrate
             - name: Load fixtures
-              run: symfony console doctrine:fixture:load
+              run: symfony console doctrine:fixture:load --no-interaction --env=test
             - name: Start Symfony + Run Cypress
               uses: cypress-io/github-action@v6
               with:
-                start: symfony server:start --port=8000 --no-tls --env=test
+                start: symfony server:start --port=8000 --no-tls
                 wait-on: 'http://localhost:8000'
                 wait-on-timeout: 120
                 browser: chrome

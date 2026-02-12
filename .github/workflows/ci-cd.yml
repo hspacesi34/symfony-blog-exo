@@ -52,3 +52,20 @@ jobs:
               run: composer install
             - name: création private et public key
               run: php bin/console lexik:jwt:generate-keypair
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                node-version: '20'
+                cache: 'npm'
+            
+            - name: Install Cypress
+              run: npm ci
+            
+            - name: Start Symfony + Run Cypress
+              uses: cypress-io/github-action@v6
+              with:
+                start: symfony server:start --port=8000 --no-tls --env=test
+                wait-on: 'http://localhost:8000'
+                wait-on-timeout: 120
+                browser: chrome
+                record: false

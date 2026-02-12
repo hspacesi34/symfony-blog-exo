@@ -48,7 +48,7 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 10; $i++) {
             $category = (new Category())
-                ->setNameCat($faker->word())
+                ->setNameCat($faker->unique()->word())
                 ->setDescriptionCat($faker->text(200));
 
             $manager->persist($category);

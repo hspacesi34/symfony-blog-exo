@@ -6,7 +6,7 @@ on:
     
 jobs:
     e2e:
-        runs-on: debian-latest
+        runs-on: ubuntu-latest
         services:
             mysql:
                 image: mysql:8.0

@@ -64,7 +64,7 @@ jobs:
             - name: Start Symfony + Run Cypress
               uses: cypress-io/github-action@v6
               with:
-                start: php -S 0.0.0.0:8000 -t public --env=TEST_ENV=test
+                start: php -S 0.0.0.0:8000 -t public
                 wait-on: 'http://localhost:8000'
                 wait-on-timeout: 120
                 browser: chrome

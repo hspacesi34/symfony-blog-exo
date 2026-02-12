@@ -1,0 +1,59 @@
+name: E2E Cypress Symfony
+on:
+    push:
+        branches: ["main"]
+    workflow_dispatch:
+    
+jobs:
+    e2e:
+        runs-on: debian-latest
+        services:
+            mysql:
+                image: mysql:8.0
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                    MYSQL_ROOT_HOST: "%"
+                    MYSQL_DATABASE: test
+                ports:
+                    - "3306:3306"
+                options: --default-authentication-plugin=mysql_native_password --skip-ssl
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Install PHP 8.5
+              uses: shivammathur/setup-php@v2
+              with:
+                php-version: '8.5'
+                extensions: mbstring, intl, pdo_mysql, sodium, zip
+                tools: composer
+                coverage: none
+            - name: fichier .env
+              run: |
+                cat > .env << 'ENV'
+                APP_ENV=dev
+                APP_SECRET=
+                APP_SHARE_DIR=var/share
+                DEFAULT_URI=http://localhost
+                DATABASE_URL=
+                MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
+                MAILER_DSN=null://null
+                CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+                JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+                JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+                JWT_PASSPHRASE=
+                ENV
+            - name: fichier .env.dev
+              run: |
+                cat > .env.test << 'ENV.TEST'
+                APP_SECRET=d9d075bafae3eebb469a1b8fc9c809d7
+                DATABASE_URL="mysql://root:root@127.0.0.1:3306/test?serverVersion=8.0.44&charset=utf8mb4"
+                JWT_PASSPHRASE="test"
+                ENV.TEST
+            - name: création private et public key
+              run: |
+                mkdir config/jwt
+                openssl genpkey -out config/jwt/private.pem -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 -passout pass:test
+                openssl pkey -in config/jwt/private.pem -out config/jwt/public.pem -pubout -passin pass:test
+            - name: Installer dépendances
+              run: |
+                composer install

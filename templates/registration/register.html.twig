@@ -8,8 +8,8 @@
         <div class="card-body p-8 flex flex-col items-center">
             <h1 class="card-title text-2xl mb-6">S'enregistrer</h1>
 
-            {{ form_errors(registrationForm) }}
             <turbo-frame id="register-form">
+                {{ form_errors(registrationForm) }}
                 <!-- votre formulaire + alerte -->
                 {{ form_start(registrationForm, {
                     attr: {
@@ -25,11 +25,11 @@
                     {{ form_row(registrationForm.agreeTerms) }}
                     
                     <div class="form-control mt-6 w-full max-w-sm flex justify-center">
-                        <button type="submit" class="btn btn-primary w-32">Register</button>
+                        <button type="submit" class="btn btn-primary w-32" data-cy="submit">Register</button>
                     </div>
                 {{ form_end(registrationForm) }}
                 {% for message in app.flashes('success') %}
-                    <div class="alert alert-success">
+                    <div data-cy="msgValidation" class="alert alert-success">
                         {{ message }}
                     </div>
                 {% endfor %}

@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\{User, Article};
+use App\Entity\{Article};
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Form\ArticleType;

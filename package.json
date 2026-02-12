@@ -1,0 +1,26 @@
+{
+  "name": "symfony-blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "cypress open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hspacesi34/symfony-blog-exo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hspacesi34/symfony-blog-exo/issues"
+  },
+  "homepage": "https://github.com/hspacesi34/symfony-blog-exo#readme",
+  "devDependencies": {
+    "cypress": "^15.10.0"
+  }
+}

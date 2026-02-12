@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL_USER', fields: ['email_user'])]
@@ -53,6 +54,7 @@ class User extends Entity implements UserInterface, PasswordAuthenticatedUserInt
 
     #[ORM\Column(length: 180)]
     #[Groups(['user-read', 'user-write'])]
+    #[Assert\NotBlank(message: "L'email ne peut pas être vide")]
     private ?string $email_user = null;
 
     /**
@@ -71,10 +73,12 @@ class User extends Entity implements UserInterface, PasswordAuthenticatedUserInt
 
     #[ORM\Column(length: 50)]
     #[Groups(['user-read', 'user-write'])]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide")]
     private ?string $name_user = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['user-read', 'user-write'])]
+    #[Assert\NotBlank(message: "Le prénom ne peut pas être vide")]
     private ?string $firstname_user = null;
 
     #[ORM\Column]

@@ -47,7 +47,7 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        - { path: ^/category/add, roles: ROLE_ADMIN }
+        # - { path: ^/category/add, roles: ROLE_ADMIN }
         - { path: ^/api/categories, methods: [POST], roles: ROLE_ADMIN }
         - { path: ^/api/categories, roles: ROLE_USER }
         # - { path: ^/profile, roles: ROLE_USER }

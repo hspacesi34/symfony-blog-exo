@@ -64,6 +64,8 @@ jobs:
               run: |
                 curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | sudo -E bash
                 sudo apt install symfony-cli
+            - name: Supprimer migrations existantes
+              run: rm -f migrations/Version*.php
             - name: Créer DB & migrate
               run: |
                 symfony console doctrine:database:create

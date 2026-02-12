@@ -29,7 +29,7 @@ jobs:
             - name: fichier .env
               run: |
                 cat > .env << 'ENV'
-                APP_ENV=dev
+                APP_ENV=test
                 APP_SECRET=
                 APP_SHARE_DIR=var/share
                 DEFAULT_URI=http://localhost
@@ -41,7 +41,7 @@ jobs:
                 JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
                 JWT_PASSPHRASE=
                 ENV
-            - name: fichier .env.dev
+            - name: fichier .env.test
               run: |
                 cat > .env.test << 'ENV.TEST'
                 APP_SECRET=d9d075bafae3eebb469a1b8fc9c809d7

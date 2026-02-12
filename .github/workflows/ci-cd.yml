@@ -60,11 +60,21 @@ jobs:
             
             - name: Install Cypress
               run: npm ci
-            
+            - name: Install Symfony CLI
+              run: |
+                curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | sudo -E bash
+                sudo apt install symfony-cli
+            - name: Créer DB & migrate
+              run: |
+                symfony console doctrine:database:create
+                symfony console make:migration
+                symfony console doctrine:migrations:migrate
+            - name: Load fixtures
+              run: symfony console doctrine:fixture:load
             - name: Start Symfony + Run Cypress
               uses: cypress-io/github-action@v6
               with:
-                start: php -S 0.0.0.0:8000 -t public
+                start: symfony server:start --port=8000 --no-tls --env=test
                 wait-on: 'http://localhost:8000'
                 wait-on-timeout: 120
                 browser: chrome

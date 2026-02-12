@@ -48,7 +48,7 @@ jobs:
                 DATABASE_URL="mysql://root:root@127.0.0.1:3306/test?serverVersion=8.0.44&charset=utf8mb4"
                 JWT_PASSPHRASE="test"
                 ENV.TEST
-            - name: création private et public key
-              run: php bin/console lexik:jwt:generate-keypair
             - name: Installer dépendances
               run: composer install
+            - name: création private et public key
+              run: php bin/console lexik:jwt:generate-keypair

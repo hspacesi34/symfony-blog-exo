@@ -19,6 +19,7 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('name_cat', TextType::class, [
+                'required' => false,
                 'label' => 'Nom de la catégorie',
                 'label_attr' => [
                     'class' => 'block text-lg font-medium mb-2',
@@ -35,6 +36,7 @@ class CategoryType extends AbstractType
                 ],
             ])
             ->add('description_cat', TextareaType::class, [
+                'required' => false,
                 'label' => 'Description',
                 'label_attr' => [
                     'class' => 'block text-lg font-medium mb-2',

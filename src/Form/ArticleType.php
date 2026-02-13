@@ -21,6 +21,7 @@ class ArticleType extends AbstractType
     {
         $builder
             ->add('title_article', TextType::class, [
+                'required' => false,
                 'label' => 'Titre de l’article',
                 'label_attr' => ['class' => 'block text-lg font-medium mb-2'],
                 'attr' => [
@@ -29,6 +30,7 @@ class ArticleType extends AbstractType
                 ],
             ])
             ->add('content_article', TextareaType::class, [
+                'required' => false,
                 'label' => 'Contenu',
                 'label_attr' => ['class' => 'block text-lg font-medium mb-2'],
                 'attr' => [
@@ -38,10 +40,12 @@ class ArticleType extends AbstractType
                 ],
             ])
             ->add('image_article', FileType::class, [
+                'required' => false,
                 'label' => "Image de l'article",
                 'label_attr' => ['class' => 'block text-lg font-medium mb-2']
             ])
             ->add('categories', EntityType::class, [
+                'required' => false,
                 'class' => Category::class,
                 'choice_label' => 'name_cat',
                 'label' => 'Catégories',

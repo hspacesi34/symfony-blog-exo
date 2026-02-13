@@ -1,79 +1,95 @@
-describe('register', () => {
+describe('Formulaire inscription /register', () => {
+  const validUserBase = {
+    name_user: 'Jarry',
+    firstname_user: 'Cedric',
+    plainPassword: 'testtest',
+  };
 
   beforeEach(() => {
-		cy.visit('/register');
-	});
+    cy.visit('/register');
+  });
 
-  it('passes', () => {
-    const name_user = "Jarry";
-    cy.get('[data-cy="name_user"]').type(name_user)
-    const firstname_user = "Cédric";
-    cy.get('[data-cy="firstname_user"]').type(firstname_user)
-    const email_user = "oiylyililiyrjyj@gmail.com";
-    cy.get('[data-cy="email_user"]').type(email_user)
-    const password = "testtest";
-    cy.get('[data-cy="plainPassword"]').type(password)
-    cy.get('[data-cy="agreeTerms"]').click()
+  it('soumet le formulaire avec succès', () => {
+    cy.uniqueEmail().then((email) => {
+      cy.fillRegistrationForm({
+        ...validUserBase,
+        email_user: email,
+      });
 
-    cy.get('[data-cy="submit"]').click()
-    cy.wait(2000);
+      cy.get('[data-cy="submit"]').click();
+      cy.get('[data-cy="msgValidation"]').should('contain', 'Enregistrement bien effectué');
+    });
+  });
 
-    const msgValidation = "Enregistrement bien effectué";
+  it('refuse un email déjà existant', () => {
+    cy.uniqueEmail().then((email) => {
+      cy.fillRegistrationForm({
+        ...validUserBase,
+        email_user: email,
+      });
+      cy.get('[data-cy="submit"]').click();
+      cy.get('[data-cy="msgValidation"]').should('contain', 'Enregistrement bien effectué');
 
-    cy.get('[data-cy="msgValidation"]').should('contain', msgValidation)
-  })
-  it('email_user already exists', () => {
-    const name_user = "Jarry";
-    cy.get('[data-cy="name_user"]').type(name_user)
-    const firstname_user = "Cédric";
-    cy.get('[data-cy="firstname_user"]').type(firstname_user)
-    const email_user = "oiylyililiyrjyj@gmail.com";
-    cy.get('[data-cy="email_user"]').type(email_user)
-    const password = "testtest";
-    cy.get('[data-cy="plainPassword"]').type(password)
-    cy.get('[data-cy="agreeTerms"]').click()
+      cy.visit('/register');
+      cy.fillRegistrationForm({
+        ...validUserBase,
+        email_user: email,
+      });
+      cy.get('[data-cy="submit"]').click();
 
-    cy.get('[data-cy="submit"]').click()
-    cy.wait(2000);
+      cy.contains('There is already an account with this email_user').should('be.visible');
+    });
+  });
 
-    const msgValidation = "There is already an account with this email_user";
+  it('refuse un nom trop court', () => {
+    cy.uniqueEmail().then((email) => {
+      cy.fillRegistrationForm({
+        ...validUserBase,
+        name_user: 'J',
+        email_user: email,
+      });
 
-    cy.get('#registration_form_email_user_error1').should('contain', msgValidation)
-  })
-  it('name_user fails', () => {
-    const name_user = "J";
-    cy.get('[data-cy="name_user"]').type(name_user)
-    const firstname_user = "Cédric";
-    cy.get('[data-cy="firstname_user"]').type(firstname_user)
-    const email_user = "jetjjetjt@etjejttje.com";
-    cy.get('[data-cy="email_user"]').type(email_user)
-    const password = "testtest";
-    cy.get('[data-cy="plainPassword"]').type(password)
-    cy.get('[data-cy="agreeTerms"]').click()
+      cy.get('[data-cy="submit"]').click();
+      cy.contains('Le nom doit contenir 2 caractères').should('be.visible');
+    });
+  });
 
-    cy.get('[data-cy="submit"]').click()
-    cy.wait(2000);
+  it('refuse un prénom trop court', () => {
+    cy.uniqueEmail().then((email) => {
+      cy.fillRegistrationForm({
+        ...validUserBase,
+        firstname_user: 'C',
+        email_user: email,
+      });
 
-    const msgValidation = "Le nom doit contenir 2 caractères";
+      cy.get('[data-cy="submit"]').click();
+      cy.contains('Le prénom doit contenir 2 caractères').should('be.visible');
+    });
+  });
 
-    cy.get('#registration_form_name_user_error1').should('contain', msgValidation)
-  })
-  it('firstname_user fails', () => {
-    const name_user = "Jarry";
-    cy.get('[data-cy="name_user"]').type(name_user)
-    const firstname_user = "C";
-    cy.get('[data-cy="firstname_user"]').type(firstname_user)
-    const email_user = "jetjjetjt@etjejttje.com";
-    cy.get('[data-cy="email_user"]').type(email_user)
-    const password = "testtest";
-    cy.get('[data-cy="plainPassword"]').type(password)
-    cy.get('[data-cy="agreeTerms"]').click()
+  it('refuse un mot de passe trop court', () => {
+    cy.uniqueEmail().then((email) => {
+      cy.fillRegistrationForm({
+        ...validUserBase,
+        email_user: email,
+        plainPassword: '12345',
+      });
 
-    cy.get('[data-cy="submit"]').click()
-    cy.wait(2000);
+      cy.get('[data-cy="submit"]').click();
+      cy.contains('Le mot de passe doit contenir 6 caractères').should('be.visible');
+    });
+  });
 
-    const msgValidation = "Le prénom doit contenir 2 caractères";
+  it('refuse si les CGU ne sont pas cochées', () => {
+    cy.uniqueEmail().then((email) => {
+      cy.fillRegistrationForm({
+        ...validUserBase,
+        email_user: email,
+        agreeTerms: false,
+      });
 
-    cy.get('#registration_form_firstname_user_error1').should('contain', msgValidation)
-  })
-})
+      cy.get('[data-cy="submit"]').click();
+      cy.contains('You should agree to our terms.').should('be.visible');
+    });
+  });
+});

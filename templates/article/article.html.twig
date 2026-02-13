@@ -16,8 +16,12 @@
 				<!-- Auteur et dates -->
 				<div class="flex flex-col sm:flex-row justify-between text-sm text-gray-500 mb-6">
 					<span>Auteur :
+						{% if article.writeBy %}
 						{{ article.writeBy.firstnameUser }}
 						{{ article.writeBy.nameUser }}</span>
+						{% else %}
+							Pas d'auteur
+						{% endif %}
 					<span>
 						Publié le :
 						{% if article.publishedAt %}

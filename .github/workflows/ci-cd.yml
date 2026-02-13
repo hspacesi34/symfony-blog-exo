@@ -14,20 +14,23 @@ jobs:
                     MYSQL_ROOT_PASSWORD: root
                     MYSQL_ROOT_HOST: "%"
                     MYSQL_DATABASE: test
+                ports:
+                    - "3306:3306"
                 options: >-
-                    --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
-                    --health-interval=10s
-                    --health-timeout=5s
-                    --health-retries=5
+                  --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+                  --health-interval=10s
+                  --health-timeout=5s
+                  --health-retries=5
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
             - name: Install PHP 8.5
               uses: shivammathur/setup-php@v2
               with:
                 php-version: '8.5'
                 extensions: mbstring, intl, pdo_mysql, sodium, zip
                 tools: composer
+                coverage: none
             - name: fichier .env
               run: |
                 cat > .env << 'ENV'
@@ -74,21 +77,9 @@ jobs:
                 symfony console doctrine:database:create
                 symfony console make:migration
                 symfony console doctrine:migrations:migrate
-            - name: Start Symfony + Run Cypress
+            - name: Start Symfony
+              run: symfony server:start --port=8000 --no-tls --allow-all-ip
+            - name: Run Cypress
               uses: cypress-io/github-action@v6
               with:
-                start: symfony server:start --port=8000 --no-tls --allow-all-ip
-                wait-on: 'http://127.0.0.1:8000/'
-                wait-on-timeout: 60
                 record: false
-              env:
-                APP_ENV: test
-                APP_DEBUG: 1
-
-            - name: Show Symfony logs on failure
-              if: failure()
-              run: |
-                echo "== var/log contents =="
-                ls -la var/log || true
-                echo "== test.log (tail) =="
-                tail -n 200 var/log/test.log || true

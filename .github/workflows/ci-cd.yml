@@ -78,7 +78,7 @@ jobs:
                 symfony console make:migration
                 symfony console doctrine:migrations:migrate
             - name: Start Symfony
-              run: symfony server:start --port=8000 --no-tls --allow-all-ip
+              run: symfony server:start --port=8000 --no-tls --allow-all-ip --daemon
             - name: Run Cypress
               uses: cypress-io/github-action@v6
               with:

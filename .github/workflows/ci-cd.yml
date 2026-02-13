@@ -137,7 +137,7 @@ jobs:
             cat > .env.prod << 'ENV.PROD'
             DEFAULT_URI=http://127.0.0.1
             APP_SECRET=d9d075bafae3eebb469a1b8fc9c809d7
-            DATABASE_URL="mysql://${{ secrets.BDD_LOGIN }}:${{ secrets.BDD_PASSWORD }}@${{ secrets.BDD_HOST }}/${{ secrets.BDD_NAME }}?serverVersion=8.0.44&charset=utf8mb4"
+            DATABASE_URL="mysql://${{ secrets.BDD_LOGIN }}:${{ secrets.BDD_PASSWORD }}@${{ secrets.BDD_HOST }}/${{ secrets.BDD_NAME }}"
             JWT_PASSPHRASE="teete0159e6ethe"
             ENV.PROD
         # installation des dépendances composer prod
@@ -161,4 +161,5 @@ jobs:
             server: ${{ secrets.FTP_SERVER }}
             username: ${{ secrets.FTP_USERNAME }}
             password: ${{ secrets.FTP_PASSWORD }}
-            exclude: var/**
+            exclude: |
+              var/**

@@ -75,3 +75,6 @@ jobs:
               uses: cypress-io/github-action@v6
               with:
                 start: symfony server:start --port=8000 --no-tls --allow-all-ip
+                wait-on: 'http://127.0.0.1:8000/register'
+                wait-on-timeout: 60
+                record: false

@@ -63,6 +63,8 @@ jobs:
                 openssl rsa -pubout -passin pass:"$JWT_PASSPHRASE" -in config/jwt/private.pem -out config/jwt/public.pem
               env:
                 JWT_PASSPHRASE: test
+            - name: Build Tailwind CSS
+              run: php bin/console tailwind:build --minify
             - name: Supprimer migrations existantes
               run: rm -f migrations/Version*.php
             - name: Créer DB & migrate

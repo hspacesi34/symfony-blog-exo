@@ -57,7 +57,12 @@ jobs:
             - name: Installer dépendances
               run: composer install --no-progress --prefer-dist --no-interaction
             - name: création private et public key
-              run: php bin/console lexik:jwt:generate-keypair
+              run: |
+                mkdir -p config/jwt
+                openssl genrsa -aes256 -passout pass:"$JWT_PASSPHRASE" -out config/jwt/private.pem 4096
+                openssl rsa -pubout -passin pass:"$JWT_PASSPHRASE" -in config/jwt/private.pem -out config/jwt/public.pem
+              env:
+                JWT_PASSPHRASE: test
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
@@ -66,19 +71,15 @@ jobs:
             
             - name: Install Cypress
               run: npm ci
-            - name: Install Symfony CLI
-              run: |
-                curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | sudo -E bash
-                sudo apt install symfony-cli
             - name: Supprimer migrations existantes
               run: rm -f migrations/Version*.php
             - name: Créer DB & migrate
               run: |
-                symfony console doctrine:database:create
-                symfony console make:migration
-                symfony console doctrine:migrations:migrate
+                php bin/console doctrine:database:create
+                php bin/console make:migration
+                php bin/console doctrine:migrations:migrate
             - name: Start Symfony
-              run: symfony server:start --port=8000 --no-tls --allow-all-ip --daemon
+              run: php -S 127.0.0.1:8000 -t public &
             - name: Run Cypress
               uses: cypress-io/github-action@v6
               with:

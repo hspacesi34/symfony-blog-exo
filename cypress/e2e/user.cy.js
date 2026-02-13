@@ -1,6 +1,6 @@
 describe('register', () => {
   it('passes', () => {
-    cy.visit('http://localhost:8000/register')
+    cy.visit('/register')
     const name_user = "Jarry";
     cy.get('[data-cy="name_user"]').type(name_user)
     const firstname_user = "Cédric";
@@ -19,7 +19,7 @@ describe('register', () => {
     cy.get('[data-cy="msgValidation"]').should('contain', msgValidation)
   })
   it('email_user already exists', () => {
-    cy.visit('http://localhost:8000/register')
+    cy.visit('/register')
     const name_user = "Jarry";
     cy.get('[data-cy="name_user"]').type(name_user)
     const firstname_user = "Cédric";
@@ -38,7 +38,7 @@ describe('register', () => {
     cy.get('#registration_form_email_user_error1').should('contain', msgValidation)
   })
   it('name_user fails', () => {
-    cy.visit('http://localhost:8000/register')
+    cy.visit('/register')
     const name_user = "J";
     cy.get('[data-cy="name_user"]').type(name_user)
     const firstname_user = "Cédric";
@@ -57,7 +57,7 @@ describe('register', () => {
     cy.get('#registration_form_name_user_error1').should('contain', msgValidation)
   })
   it('firstname_user fails', () => {
-    cy.visit('http://localhost:8000/register')
+    cy.visit('/register')
     const name_user = "Jarry";
     cy.get('[data-cy="name_user"]').type(name_user)
     const firstname_user = "C";

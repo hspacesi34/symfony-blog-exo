@@ -79,7 +79,7 @@ jobs:
                 php bin/console make:migration
                 php bin/console doctrine:migrations:migrate
             - name: Start Symfony
-              run: php -S 127.0.0.1:8000 -t public &
+              run: php -S 127.0.0.1:8000 -t public > /tmp/php-server.log 2>&1 &
             - name: Wait for server
               run: |
                 for i in {1..30}; do
@@ -96,3 +96,8 @@ jobs:
               uses: cypress-io/github-action@v6
               with:
                 record: false
+            - name: Show PHP server log on failure
+              if: failure()
+              run: |
+                echo "== PHP built-in server log =="
+                tail -n 200 /tmp/php-server.log || true

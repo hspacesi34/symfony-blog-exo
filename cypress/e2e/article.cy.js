@@ -25,9 +25,13 @@ describe('Formulaire article /article/add', () => {
     cy.get('textarea[name="article[content_article]"]').type('Contenu e2e valide pour un test Cypress.');
     cy.get('input[name="article[image_article]"]').selectFile('cypress/fixtures/example.json', { force: true });
 
-    cy.get('select[name="article[categories][]"] option').then(($options) => {
-      const firstValue = $options.first().val();
-      cy.get('select[name="article[categories][]"]').select([`${firstValue}`], { force: true });
+    cy.get('select[name="article[categories][]"]').then(($select) => {
+      const options = $select.find('option');
+
+      if (options.length > 0) {
+        const firstValue = options.first().val();
+        cy.get('select[name="article[categories][]"]').select([`${firstValue}`], { force: true });
+      }
     });
 
     cy.get('button[type="submit"]').click();

@@ -117,21 +117,6 @@ jobs:
             extensions: mbstring, intl, pdo_mysql, sodium, zip
             tools: composer
             coverage: none
-        
-        # installation des dépendances composer prod
-        - name: Installer dépendances Composer
-          run: composer install --no-interaction --prefer-dist
-        - name: création private et public key
-          run: |
-            mkdir -p config/jwt
-            openssl genrsa -aes256 -passout pass:"$JWT_PASSPHRASE" -out config/jwt/private.pem 4096
-            openssl rsa -pubout -passin pass:"$JWT_PASSPHRASE" -in config/jwt/private.pem -out config/jwt/public.pem
-          env:
-            JWT_PASSPHRASE: teete0159e6ethe
-        - name: Build Tailwind CSS
-          run: php bin/console tailwind:build --minify
-        - name: Supprimer migrations existantes
-          run: rm -f migrations/Version*.php
         - name: fichier .env
           run: |
             cat > .env << 'ENV'
@@ -155,6 +140,20 @@ jobs:
             DATABASE_URL="mysql://${{ secrets.BDD_LOGIN }}:${{ secrets.BDD_PASSWORD }}@${{ secrets.BDD_HOST }}/${{ secrets.BDD_NAME }}?serverVersion=8.0.44&charset=utf8mb4"
             JWT_PASSPHRASE="teete0159e6ethe"
             ENV.PROD
+        # installation des dépendances composer prod
+        - name: Installer dépendances Composer
+          run: composer install --no-interaction --prefer-dist
+        - name: création private et public key
+          run: |
+            mkdir -p config/jwt
+            openssl genrsa -aes256 -passout pass:"$JWT_PASSPHRASE" -out config/jwt/private.pem 4096
+            openssl rsa -pubout -passin pass:"$JWT_PASSPHRASE" -in config/jwt/private.pem -out config/jwt/public.pem
+          env:
+            JWT_PASSPHRASE: teete0159e6ethe
+        - name: Build Tailwind CSS
+          run: php bin/console tailwind:build --minify
+        - name: Supprimer migrations existantes
+          run: rm -f migrations/Version*.php
         # Deployment via FTP
         - name: 📂 Deployment to FTP
           uses: SamKirkland/FTP-Deploy-Action@v4.3.6

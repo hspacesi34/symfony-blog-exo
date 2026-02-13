@@ -101,3 +101,64 @@ jobs:
                 echo "== Symfony logs =="
                 ls -la var/log || true
                 tail -n 200 var/log/test.log || true
+    deploy:
+      needs: e2e
+      runs-on: ubuntu-latest
+      steps:
+        # Checkout du code(récupération depuis le repo github)
+        - name: Checkout
+          uses: actions/checkout@v6
+        
+        # Setup PHP, Composer, extensions
+        - name: Setup PHP CLI (Composer & outils)
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: '8.5'
+            extensions: mbstring, intl, pdo_mysql, sodium, zip
+            tools: composer
+            coverage: none
+        
+        # installation des dépendances composer prod
+        - name: Installer dépendances Composer
+          run: composer install --no-interaction --prefer-dist
+        - name: création private et public key
+          run: |
+            mkdir -p config/jwt
+            openssl genrsa -aes256 -passout pass:"$JWT_PASSPHRASE" -out config/jwt/private.pem 4096
+            openssl rsa -pubout -passin pass:"$JWT_PASSPHRASE" -in config/jwt/private.pem -out config/jwt/public.pem
+          env:
+            JWT_PASSPHRASE: teete0159e6ethe
+        - name: Build Tailwind CSS
+          run: php bin/console tailwind:build --minify
+        - name: Supprimer migrations existantes
+          run: rm -f migrations/Version*.php
+        - name: fichier .env
+          run: |
+            cat > .env << 'ENV'
+            APP_ENV=prod
+            APP_SECRET=
+            APP_SHARE_DIR=var/share
+            DEFAULT_URI=
+            DATABASE_URL=
+            MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
+            MAILER_DSN=null://null
+            CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+            JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+            JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+            JWT_PASSPHRASE=
+            ENV
+        - name: fichier .env.prod
+          run: |
+            cat > .env.prod << 'ENV.PROD'
+            DEFAULT_URI=http://127.0.0.1
+            APP_SECRET=d9d075bafae3eebb469a1b8fc9c809d7
+            DATABASE_URL="mysql://${{ secrets.BDD_LOGIN }}:${{ secrets.BDD_PASSWORD }}@${{ secrets.BDD_HOST }}/${{ secrets.BDD_NAME }}?serverVersion=8.0.44&charset=utf8mb4"
+            JWT_PASSPHRASE="teete0159e6ethe"
+            ENV.PROD
+        # Deployment via FTP
+        - name: 📂 Deployment to FTP
+          uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+          with:
+            server: ${{ secrets.FTP_SERVER }}
+            username: ${{ secrets.FTP_USERNAME }}
+            password: ${{ secrets.FTP_PASSWORD }}

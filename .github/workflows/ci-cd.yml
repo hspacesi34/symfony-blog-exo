@@ -63,14 +63,6 @@ jobs:
                 openssl rsa -pubout -passin pass:"$JWT_PASSPHRASE" -in config/jwt/private.pem -out config/jwt/public.pem
               env:
                 JWT_PASSPHRASE: test
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                node-version: '20'
-                cache: 'npm'
-            
-            - name: Install Cypress
-              run: npm ci
             - name: Supprimer migrations existantes
               run: rm -f migrations/Version*.php
             - name: Créer DB & migrate
@@ -79,7 +71,10 @@ jobs:
                 php bin/console make:migration
                 php bin/console doctrine:migrations:migrate
             - name: Start Symfony
-              run: php -S 127.0.0.1:8000 -t public > /tmp/php-server.log 2>&1 &
+              run: php -d display_errors=1 -d error_reporting=E_ALL -S 127.0.0.1:8000 -t public > /tmp/php-server.log 2>&1 &
+              env:
+                APP_ENV: test
+                APP_DEBUG: 1
             - name: Wait for server
               run: |
                 for i in {1..30}; do
@@ -101,3 +96,6 @@ jobs:
               run: |
                 echo "== PHP built-in server log =="
                 tail -n 200 /tmp/php-server.log || true
+                echo "== Symfony logs =="
+                ls -la var/log || true
+                tail -n 200 var/log/test.log || true

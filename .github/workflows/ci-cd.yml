@@ -16,6 +16,11 @@ jobs:
                     MYSQL_DATABASE: test
                 ports:
                     - "3306:3306"
+                options: >-
+                    --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+                    --health-interval=10s
+                    --health-timeout=5s
+                    --health-retries=5
         steps:
             - name: Checkout
               uses: actions/checkout@v6
@@ -32,7 +37,7 @@ jobs:
                 APP_ENV=test
                 APP_SECRET=
                 APP_SHARE_DIR=var/share
-                DEFAULT_URI=http://localhost
+                DEFAULT_URI=
                 DATABASE_URL=
                 MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
                 MAILER_DSN=null://null
@@ -44,6 +49,7 @@ jobs:
             - name: fichier .env.test
               run: |
                 cat > .env.test << 'ENV.TEST'
+                DEFAULT_URI=http://127.0.0.1
                 APP_SECRET=d9d075bafae3eebb469a1b8fc9c809d7
                 DATABASE_URL="mysql://root:root@127.0.0.1:3306/test?serverVersion=8.0.44&charset=utf8mb4"
                 JWT_PASSPHRASE="test"
@@ -76,5 +82,5 @@ jobs:
               with:
                 start: symfony server:start --port=8000 --no-tls --allow-all-ip
                 wait-on: 'http://127.0.0.1:8000/register'
-                wait-on-timeout: 60
+                wait-on-timeout: 30
                 record: false

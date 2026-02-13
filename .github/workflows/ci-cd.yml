@@ -76,8 +76,8 @@ jobs:
             - name: Start Symfony + Run Cypress
               uses: cypress-io/github-action@v6
               with:
-                start: symfony server:start --port=8000 --no-tls
-                wait-on: 'http://localhost:8000'
+                start: symfony server:start --port=8000 --no-tls --allow-all-ip
+                wait-on: 'http://127.0.0.1:8000'
                 wait-on-timeout: 120
                 browser: chrome
                 record: false

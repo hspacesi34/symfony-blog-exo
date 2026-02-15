@@ -157,15 +157,47 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y lftp
 
+        - name: Préparer package FTP Hostinger
+          run: |
+            set -euo pipefail
+            rm -rf .deploy
+            mkdir -p .deploy/app .deploy/web
+
+            rsync -a --delete \
+              --exclude '.git' \
+              --exclude '.github' \
+              --exclude 'bruno' \
+              --exclude 'cypress' \
+              --exclude 'tests' \
+              --exclude 'node_modules' \
+              --exclude 'var' \
+              --exclude 'public' \
+              ./ .deploy/app/
+
+            rsync -a --delete public/ .deploy/web/
+
+            cat > .deploy/web/index.php <<'PHP'
+            <?php
+
+            use App\Kernel;
+
+            $_SERVER['APP_RUNTIME_OPTIONS']['project_dir'] = __DIR__.'/app';
+
+            require_once __DIR__.'/app/vendor/autoload_runtime.php';
+
+            return function (array $context) {
+                return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+            };
+            PHP
+
         # Deployment via FTP (robuste: reprise + retries)
         - name: 📂 Deployment to FTP (reprise auto)
           env:
             FTP_HOST: ${{ secrets.FTP_MAT_SERVER }}
             FTP_USER: ${{ secrets.FTP_MAT_USERNAME }}
             FTP_PASS: ${{ secrets.FTP_MAT_PASSWORD }}
+            FTP_PARALLEL: "2"
           run: |
-            REMOTE_DIR="/"
-
             lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" <<EOF
             set ftp:passive-mode true
             set ftp:list-empty-ok true
@@ -176,16 +208,15 @@ jobs:
             set net:reconnect-interval-base 5
             set net:reconnect-interval-max 60
             set xfer:clobber true
-            set mirror:parallel-transfer-count 3
+            set mirror:parallel-transfer-count $FTP_PARALLEL
+
+            mkdir -p "/"
+            mkdir -p "/app"
 
             mirror --reverse --continue --delete --only-newer --verbose \
-              --exclude-glob .git/** \
-              --exclude-glob .github/** \
-              --exclude-glob bruno/** \
-              --exclude-glob cypress/** \
-              --exclude-glob tests/** \
-              --exclude-glob node_modules/** \
-              --exclude-glob var/** \
-              ./ "$REMOTE_DIR"
+              ./.deploy/app/ "/app"
+
+            mirror --reverse --continue --delete --only-newer --verbose \
+              ./.deploy/web/ "/"
             bye
             EOF

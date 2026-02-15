@@ -167,9 +167,20 @@ jobs:
             port: ${{ secrets.SSH_PORT }}
             script: |
               cd symfony-blog/
+
+              # Propriétaire du projet = debian
               sudo chown -R debian:debian .
+
+              # Droits corrects
+              sudo chmod -R 755 .
+
+              # ACL pour autoriser www-data à écrire dans var et public
+              sudo setfacl -R -m u:www-data:rwx var
+              sudo setfacl -R -m u:www-data:rwx public
+              sudo setfacl -dR -m u:www-data:rwx var
+              sudo setfacl -dR -m u:www-data:rwx public
+
               composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
               php bin/console tailwind:build --minify
-              php bin/console make:migration
-              php bin/console doctrine:migrations:migrate
-              sudo chown -R www-data:www-data public/ var/
+              php bin/console doctrine:migrations:migrate --no-interaction

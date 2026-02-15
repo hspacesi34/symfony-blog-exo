@@ -161,7 +161,13 @@ jobs:
             server: ${{ secrets.FTP_SERVER }}
             username: ${{ secrets.FTP_USERNAME }}
             password: ${{ secrets.FTP_PASSWORD }}
-            server-dir: /home/debian/symfony-blog/
+            server-dir: /symfony-blog/
             exclude: |
+              .git/**
+              .github/**
+              bruno/**
+              cypress/**
+              tests/**
+              node_modules/**
               var/**
               vendor/**

@@ -169,6 +169,8 @@ jobs:
             lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" <<EOF
             set ftp:passive-mode true
             set ftp:list-empty-ok true
+            set ssl:check-hostname no
+            set ssl:verify-certificate no
             set net:timeout 30
             set net:max-retries 20
             set net:reconnect-interval-base 5

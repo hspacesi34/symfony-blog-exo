@@ -152,19 +152,38 @@ jobs:
             JWT_PASSPHRASE: teete0159e6ethe
         - name: Build Tailwind CSS
           run: php bin/console tailwind:build --minify
-        # Deployment via FTP
-        - name: 📂 Deployment to FTP
-          uses: SamKirkland/FTP-Deploy-Action@v4.3.6
-          with:
-            server: ${{ secrets.FTP_MAT_SERVER }}
-            username: ${{ secrets.FTP_MAT_USERNAME }}
-            password: ${{ secrets.FTP_MAT_PASSWORD }}
-            exclude: |
-              .git/**
-              .github/**
-              bruno/**
-              cypress/**
-              tests/**
-              node_modules/**
-              var/**
-            protocol: ftps
+        - name: Installer lftp
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y lftp
+
+        # Deployment via FTP (robuste: reprise + retries)
+        - name: 📂 Deployment to FTP (reprise auto)
+          env:
+            FTP_HOST: ${{ secrets.FTP_MAT_SERVER }}
+            FTP_USER: ${{ secrets.FTP_MAT_USERNAME }}
+            FTP_PASS: ${{ secrets.FTP_MAT_PASSWORD }}
+          run: |
+            REMOTE_DIR="/"
+
+            lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" <<EOF
+            set ftp:passive-mode true
+            set ftp:list-empty-ok true
+            set net:timeout 30
+            set net:max-retries 20
+            set net:reconnect-interval-base 5
+            set net:reconnect-interval-max 60
+            set xfer:clobber true
+            set mirror:parallel-transfer-count 3
+
+            mirror --reverse --continue --delete --only-newer --verbose \
+              --exclude-glob .git/** \
+              --exclude-glob .github/** \
+              --exclude-glob bruno/** \
+              --exclude-glob cypress/** \
+              --exclude-glob tests/** \
+              --exclude-glob node_modules/** \
+              --exclude-glob var/** \
+              ./ "$REMOTE_DIR"
+            bye
+            EOF

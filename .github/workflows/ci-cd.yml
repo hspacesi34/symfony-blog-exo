@@ -189,3 +189,8 @@ jobs:
               php bin/console cache:clear --env=prod
               php bin/console cache:warmup --env=prod
               php bin/console doctrine:migrations:migrate --no-interaction
+        - name: Check http status code of production site
+          uses: lakuapik/gh-actions-http-status@v1
+          with:
+            sites: '["http://vps-fd25c3fb.vps.ovh.net:8000"]'
+            expected: '[200]'

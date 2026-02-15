@@ -141,6 +141,19 @@ jobs:
             openssl rsa -pubout -passin pass:"$JWT_PASSPHRASE" -in config/jwt/private.pem -out config/jwt/public.pem
           env:
             JWT_PASSPHRASE: teete0159e6ethe
+        - name: Backup current production before deploy
+          uses: appleboy/ssh-action@v1
+          with:
+            host: ${{ secrets.FTP_SERVER }}
+            username: ${{ secrets.FTP_USERNAME }}
+            password: ${{ secrets.FTP_PASSWORD }}
+            port: ${{ secrets.SSH_PORT }}
+            script: |
+              set -e
+              if [ -d symfony-blog ]; then
+                rm -rf symfony-blog_backup
+                cp -a symfony-blog symfony-blog_backup
+              fi
         # Deployment via FTP
         - name: 📂 Deployment to FTP
           uses: SamKirkland/FTP-Deploy-Action@v4.3.6
@@ -194,3 +207,45 @@ jobs:
           with:
             sites: '["http://vps-fd25c3fb.vps.ovh.net:8000"]'
             expected: '[200]'
+        - name: Rollback to previous version on failure
+          id: rollback_previous
+          if: failure()
+          uses: appleboy/ssh-action@v1
+          with:
+            host: ${{ secrets.FTP_SERVER }}
+            username: ${{ secrets.FTP_USERNAME }}
+            password: ${{ secrets.FTP_PASSWORD }}
+            port: ${{ secrets.SSH_PORT }}
+            script: |
+              set -e
+              if [ -d symfony-blog_backup ]; then
+                rm -rf symfony-blog
+                mv symfony-blog_backup symfony-blog
+                sudo chown -R debian:debian symfony-blog
+                sudo chmod -R 755 symfony-blog
+                sudo systemctl reload apache2
+                echo "Rollback completed"
+              else
+                echo "No backup found: rollback skipped"
+                exit 1
+              fi
+        - name: Notify rollback success
+          if: failure() && steps.rollback_previous.outcome == 'success'
+          run: |
+            echo "⚠️ Deploy failed. Automatic rollback completed successfully."
+            {
+              echo "### ⚠️ Auto-rollback executed"
+              echo "- Deploy/check failed"
+              echo "- Previous version restored from \\`symfony-blog_backup\\`"
+              echo "- Apache reloaded"
+            } >> "$GITHUB_STEP_SUMMARY"
+        - name: Notify rollback failure
+          if: failure() && steps.rollback_previous.outcome == 'failure'
+          run: |
+            echo "❌ Deploy failed and rollback failed. Manual intervention required."
+            {
+              echo "### ❌ Auto-rollback failed"
+              echo "- Deploy/check failed"
+              echo "- Rollback step failed (backup missing or restore error)"
+              echo "- Manual restore required on VPS"
+            } >> "$GITHUB_STEP_SUMMARY"

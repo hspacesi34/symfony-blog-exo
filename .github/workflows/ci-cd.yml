@@ -167,11 +167,9 @@ jobs:
             port: ${{ secrets.SSH_PORT }}
             script: |
               cd symfony-blog/
-              sudo chown -R debian:www-data .
+              sudo chown -R debian:debian .
               composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-              sudo rm -rf public/bundles/*  # ← Nettoie assets avant
-              php bin/console assets:install public --no-interaction
-              sudo chown -R www-data:www-data public/ var/
               php bin/console tailwind:build --minify
               php bin/console make:migration
               php bin/console doctrine:migrations:migrate
+              sudo chown -R www-data:www-data public/ var/

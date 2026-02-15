@@ -110,13 +110,6 @@ jobs:
           uses: actions/checkout@v6
         
         # Setup PHP, Composer, extensions
-        - name: Setup PHP CLI (Composer & outils)
-          uses: shivammathur/setup-php@v2
-          with:
-            php-version: '8.5'
-            extensions: mbstring, intl, pdo_mysql, sodium, zip
-            tools: composer
-            coverage: none
         - name: fichier .env
           run: |
             cat > .env << 'ENV'
@@ -148,10 +141,6 @@ jobs:
             openssl rsa -pubout -passin pass:"$JWT_PASSPHRASE" -in config/jwt/private.pem -out config/jwt/public.pem
           env:
             JWT_PASSPHRASE: teete0159e6ethe
-        - name: Build Tailwind CSS
-          run: php bin/console tailwind:build --minify
-        - name: Supprimer migrations existantes
-          run: rm -f migrations/Version*.php
         # Deployment via FTP
         - name: 📂 Deployment to FTP
           uses: SamKirkland/FTP-Deploy-Action@v4.3.6
@@ -179,5 +168,6 @@ jobs:
             script: |
               cd symfony-blog/
               composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+              php bin/console tailwind:build --minify
               php bin/console make:migration
               php bin/console doctrine:migrations:migrate

@@ -141,8 +141,6 @@ jobs:
             JWT_PASSPHRASE="teete0159e6ethe"
             ENV.PROD
         # installation des dépendances composer prod
-        - name: Installer dépendances Composer
-          run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
         - name: création private et public key
           run: |
             mkdir -p config/jwt
@@ -171,3 +169,15 @@ jobs:
               node_modules/**
               var/**
               vendor/**
+        - name: Execute remote SSH commands using password
+          uses: appleboy/ssh-action@v1
+          with:
+            host: ${{ secrets.FTP_SERVER }}
+            username: ${{ secrets.FTP_USERNAME }}
+            password: ${{ secrets.FTP_PASSWORD }}
+            port: ${{ secrets.SSH_PORT }}
+            script: |
+              cd symfony-blog/
+              composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+              php bin/console make:migration
+              php bin/console doctrine:migrations:migrate

@@ -168,7 +168,6 @@ jobs:
             script: |
               cd symfony-blog/
               composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-              composer require symfony/maker-bundle --dev
               php bin/console tailwind:build --minify
               php bin/console make:migration
               php bin/console doctrine:migrations:migrate

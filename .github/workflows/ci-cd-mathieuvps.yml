@@ -143,10 +143,6 @@ jobs:
         # installation des dépendances composer prod
         - name: Installer dépendances Composer
           run: APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
-        - name: Compiler les variables d'environnement prod
-          run: composer dump-env prod
-        - name: Vérifier .env.local.php
-          run: test -f .env.local.php
         - name: création private et public key
           run: |
             mkdir -p config/jwt
@@ -185,6 +181,7 @@ jobs:
             mkdir -p "$REMOTE_DIR/var/log"
             mkdir -p "$REMOTE_DIR/var/sessions"
             mkdir -p "$REMOTE_DIR/var/share"
+            rm -f "$REMOTE_DIR/.env.local.php"
             mirror --reverse --continue --delete --verbose \
               --exclude-glob .git/** \
               --exclude-glob .github/** \
@@ -194,5 +191,7 @@ jobs:
               --exclude-glob node_modules/** \
               --exclude-glob var/** \
               ./ "$REMOTE_DIR"
+            put -O "$REMOTE_DIR" .env
+            put -O "$REMOTE_DIR" .env.prod
             bye
             EOF

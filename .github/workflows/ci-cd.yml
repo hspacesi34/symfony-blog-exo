@@ -24,10 +24,10 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v6
-            - name: Install PHP 8.4
+            - name: Install PHP 8.2
               uses: shivammathur/setup-php@v2
               with:
-                php-version: '8.4'
+                php-version: '8.2'
                 extensions: mbstring, intl, pdo_mysql, sodium, zip
                 tools: composer
                 coverage: none

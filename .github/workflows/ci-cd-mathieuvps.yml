@@ -37,7 +37,7 @@ jobs:
                 APP_ENV=test
                 APP_SECRET=
                 APP_SHARE_DIR=var/share
-                DEFAULT_URI=
+                DEFAULT_URI=http://127.0.0.1
                 DATABASE_URL=
                 MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
                 MAILER_DSN=null://null
@@ -123,7 +123,7 @@ jobs:
             APP_ENV=prod
             APP_SECRET=
             APP_SHARE_DIR=var/share
-            DEFAULT_URI=
+            DEFAULT_URI=http://127.0.0.1
             DATABASE_URL=
             MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
             MAILER_DSN=null://null

@@ -142,7 +142,7 @@ jobs:
             ENV.PROD
         # installation des dépendances composer prod (résolution forcée PHP 8.2 pour Hostinger)
         - name: Installer dépendances Composer
-          run: composer install --no-dev --no-scripts --optimize-autoloader --no-interaction --prefer-dist
+          run: APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
         - name: Compiler les variables d'environnement prod
           run: composer dump-env prod
         - name: Vérifier .env.local.php

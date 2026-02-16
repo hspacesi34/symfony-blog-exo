@@ -24,10 +24,10 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v6
-            - name: Install PHP 8.2
+            - name: Install PHP 8.4
               uses: shivammathur/setup-php@v2
               with:
-                php-version: '8.2'
+                php-version: '8.4'
                 extensions: mbstring, intl, pdo_mysql, sodium, zip
                 tools: composer
                 coverage: none
@@ -140,9 +140,11 @@ jobs:
             DATABASE_URL="mysql://${{ secrets.BDD_LOGIN }}:${{ secrets.BDD_PASSWORD }}@${{ secrets.BDD_HOST }}/${{ secrets.BDD_NAME }}"
             JWT_PASSPHRASE="teete0159e6ethe"
             ENV.PROD
-        # installation des dépendances composer prod
+        # installation des dépendances composer prod (résolution forcée PHP 8.2 pour Hostinger)
         - name: Installer dépendances Composer
-          run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+          run: |
+            composer config platform.php 8.2.29
+            composer update --no-dev --optimize-autoloader --no-interaction --prefer-dist
         - name: Compiler les variables d'environnement prod
           run: composer dump-env prod
         - name: Vérifier .env.local.php

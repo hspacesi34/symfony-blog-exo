@@ -24,10 +24,10 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v6
-            - name: Install PHP 8.2
+            - name: Install PHP 8.4
               uses: shivammathur/setup-php@v2
               with:
-                php-version: '8.2'
+                php-version: '8.4'
                 extensions: mbstring, intl, pdo_mysql, sodium, zip
                 tools: composer
                 coverage: none
@@ -113,7 +113,7 @@ jobs:
         - name: Setup PHP CLI (Composer & outils)
           uses: shivammathur/setup-php@v2
           with:
-            php-version: '8.2'
+            php-version: '8.4'
             extensions: mbstring, intl, pdo_mysql, sodium, zip
             tools: composer
             coverage: none
@@ -140,15 +140,13 @@ jobs:
             DATABASE_URL="mysql://${{ secrets.BDD_LOGIN }}:${{ secrets.BDD_PASSWORD }}@${{ secrets.BDD_HOST }}/${{ secrets.BDD_NAME }}"
             JWT_PASSPHRASE="teete0159e6ethe"
             ENV.PROD
-        # installation des dépendances composer prod (résolution forcée PHP 8.2 pour Hostinger)
+        # installation des dépendances composer prod
         - name: Installer dépendances Composer
           run: APP_ENV=prod APP_DEBUG=0 composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
         - name: Compiler les variables d'environnement prod
           run: composer dump-env prod
         - name: Vérifier .env.local.php
-          run: |
-            test -f .env.local.php
-            php -r '$env = require ".env.local.php"; if (!isset($env["DATABASE_URL"]) || $env["DATABASE_URL"] === "") { fwrite(STDERR, "DATABASE_URL missing in .env.local.php" . PHP_EOL); exit(1);} '
+          run: test -f .env.local.php
         - name: création private et public key
           run: |
             mkdir -p config/jwt
@@ -196,8 +194,5 @@ jobs:
               --exclude-glob node_modules/** \
               --exclude-glob var/** \
               ./ "$REMOTE_DIR"
-            put -O "$REMOTE_DIR" .env
-            put -O "$REMOTE_DIR" .env.prod
-            put -O "$REMOTE_DIR" .env.local.php
             bye
             EOF

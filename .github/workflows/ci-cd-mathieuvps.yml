@@ -143,6 +143,10 @@ jobs:
         # installation des dépendances composer prod
         - name: Installer dépendances Composer
           run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+        - name: Compiler les variables d'environnement prod
+          run: composer dump-env prod
+        - name: Vérifier .env.local.php
+          run: test -f .env.local.php
         - name: création private et public key
           run: |
             mkdir -p config/jwt
@@ -175,6 +179,12 @@ jobs:
             set net:reconnect-interval-max 60
             set xfer:clobber true
             set mirror:parallel-transfer-count 3
+            mkdir -p "$REMOTE_DIR/var"
+            mkdir -p "$REMOTE_DIR/var/cache"
+            mkdir -p "$REMOTE_DIR/var/cache/prod"
+            mkdir -p "$REMOTE_DIR/var/log"
+            mkdir -p "$REMOTE_DIR/var/sessions"
+            mkdir -p "$REMOTE_DIR/var/share"
             mirror --reverse --continue --delete --only-newer --verbose \
               --exclude-glob .git/** \
               --exclude-glob .github/** \

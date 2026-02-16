@@ -146,7 +146,9 @@ jobs:
         - name: Compiler les variables d'environnement prod
           run: composer dump-env prod
         - name: Vérifier .env.local.php
-          run: test -f .env.local.php
+          run: |
+            test -f .env.local.php
+            php -r '$env = require ".env.local.php"; if (!isset($env["DATABASE_URL"]) || $env["DATABASE_URL"] === "") { fwrite(STDERR, "DATABASE_URL missing in .env.local.php" . PHP_EOL); exit(1);} '
         - name: création private et public key
           run: |
             mkdir -p config/jwt
@@ -194,5 +196,8 @@ jobs:
               --exclude-glob node_modules/** \
               --exclude-glob var/** \
               ./ "$REMOTE_DIR"
+            put -O "$REMOTE_DIR" .env
+            put -O "$REMOTE_DIR" .env.prod
+            put -O "$REMOTE_DIR" .env.local.php
             bye
             EOF

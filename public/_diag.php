@@ -4,6 +4,13 @@ header('Content-Type: application/json; charset=utf-8');
 
 $env = $_SERVER['APP_ENV'] ?? $_ENV['APP_ENV'] ?? 'prod';
 $debug = filter_var($_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? '0', FILTER_VALIDATE_BOOL);
+$projectRoot = dirname(__DIR__);
+$envFilePath = $projectRoot . '/.env';
+$envProdFilePath = $projectRoot . '/.env.prod';
+$envFileExists = is_file($envFilePath);
+$envFileReadable = is_readable($envFilePath);
+$envProdFileExists = is_file($envProdFilePath);
+$envProdFileReadable = is_readable($envProdFilePath);
 
 $checks = [
     'php_version' => PHP_VERSION,
@@ -25,21 +32,38 @@ $checks = [
         'openssl' => extension_loaded('openssl'),
     ],
     'paths' => [
-        'project_root' => dirname(__DIR__),
+        'project_root' => $projectRoot,
         'public_index_exists' => is_file(__DIR__ . '/index.php'),
-        'autoload_runtime_exists' => is_file(dirname(__DIR__) . '/vendor/autoload_runtime.php'),
-        'dotenv_local_php_exists' => is_file(dirname(__DIR__) . '/.env.local.php'),
-        'var_exists' => is_dir(dirname(__DIR__) . '/var'),
-        'var_cache_prod_exists' => is_dir(dirname(__DIR__) . '/var/cache/prod'),
-        'var_log_exists' => is_dir(dirname(__DIR__) . '/var/log'),
-        'var_sessions_exists' => is_dir(dirname(__DIR__) . '/var/sessions'),
+        'autoload_runtime_exists' => is_file($projectRoot . '/vendor/autoload_runtime.php'),
+        'dotenv_local_php_exists' => is_file($projectRoot . '/.env.local.php'),
+        'var_exists' => is_dir($projectRoot . '/var'),
+        'var_cache_prod_exists' => is_dir($projectRoot . '/var/cache/prod'),
+        'var_log_exists' => is_dir($projectRoot . '/var/log'),
+        'var_sessions_exists' => is_dir($projectRoot . '/var/sessions'),
+    ],
+    'env_files' => [
+        'env_files_ok' => $envFileExists && $envFileReadable && $envProdFileExists && $envProdFileReadable,
+        '.env' => [
+            'path' => $envFilePath,
+            'exists' => $envFileExists,
+            'readable' => $envFileReadable,
+            'size_bytes' => $envFileExists ? filesize($envFilePath) : null,
+            'modified_at' => $envFileExists ? date(DATE_ATOM, filemtime($envFilePath)) : null,
+        ],
+        '.env.prod' => [
+            'path' => $envProdFilePath,
+            'exists' => $envProdFileExists,
+            'readable' => $envProdFileReadable,
+            'size_bytes' => $envProdFileExists ? filesize($envProdFilePath) : null,
+            'modified_at' => $envProdFileExists ? date(DATE_ATOM, filemtime($envProdFilePath)) : null,
+        ],
     ],
     'writable' => [
-        'var' => is_writable(dirname(__DIR__) . '/var'),
-        'var_cache' => is_writable(dirname(__DIR__) . '/var/cache'),
-        'var_cache_prod' => is_writable(dirname(__DIR__) . '/var/cache/prod'),
-        'var_log' => is_writable(dirname(__DIR__) . '/var/log'),
-        'var_sessions' => is_writable(dirname(__DIR__) . '/var/sessions'),
+        'var' => is_writable($projectRoot . '/var'),
+        'var_cache' => is_writable($projectRoot . '/var/cache'),
+        'var_cache_prod' => is_writable($projectRoot . '/var/cache/prod'),
+        'var_log' => is_writable($projectRoot . '/var/log'),
+        'var_sessions' => is_writable($projectRoot . '/var/sessions'),
     ],
     'symfony_boot' => [
         'ok' => false,

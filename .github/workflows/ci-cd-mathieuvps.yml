@@ -155,7 +155,9 @@ jobs:
           env:
             JWT_PASSPHRASE: teete0159e6ethe
         - name: Build Tailwind CSS
-          run: php bin/console tailwind:build --minify
+          run: APP_ENV=prod APP_DEBUG=0 php bin/console tailwind:build --minify
+        - name: Compile AssetMapper assets
+          run: APP_ENV=prod APP_DEBUG=0 php bin/console asset-map:compile
         - name: Installer lftp
           run: |
             sudo apt-get update
